@@ -84,6 +84,7 @@ class Main:
     def use_directories_switch_state_set(self, object, data=None):
         self.set_use_directories(object.get_property("active"))
         
+    # called when the settings_expander is clicked (temporary)
     def settings_expander_button_press_event(self, object, data=None):
         object.set_expanded(False)
         self.create_simple_message_dialog("Settings are still in development")
