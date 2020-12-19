@@ -70,9 +70,8 @@ class Main:
     # show save dialog and return the file destination path
     def on_save(self, use_filter=False, filter_name=[], filter_pattern=[]) -> str:
         # create and setup dialog
-        dialog = Gtk.FileChooserDialog("Please choose where to save file", self.window,
-        Gtk.FileChooserAction.SAVE, (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-        Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
+        dialog = Gtk.FileChooserDialog(title="Please choose where to save file", parent=self.window, action=Gtk.FileChooserAction.SAVE)
+        dialog.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_SAVE, Gtk.ResponseType.OK)
         dialog.set_property("do_overwrite_confirmation", True)
         i = 0
         if (use_filter):
@@ -103,9 +102,8 @@ class Main:
     # show open dialog and return the desired file or directory path (default to files)
     def on_open(self, directories=False, use_filter=False, filter_name=[], filter_pattern=[]) -> str:
         # create and setup dialog
-        dialog = Gtk.FileChooserDialog("Please choose a file" if not directories else "Please choose a folder", self.window,
-        Gtk.FileChooserAction.OPEN if not directories else Gtk.FileChooserAction.SELECT_FOLDER, (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-        Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
+        dialog = Gtk.FileChooserDialog(title=("Please choose a file" if not directories else "Please choose a folder"), parent=self.window, action=(Gtk.FileChooserAction.OPEN if not directories else Gtk.FileChooserAction.SELECT_FOLDER))
+        dialog.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK)
         i = 0
         if (use_filter):
             for f in filter_name:
