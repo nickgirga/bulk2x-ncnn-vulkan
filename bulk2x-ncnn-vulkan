@@ -133,7 +133,7 @@ class Main:
         # get widgets
         input_file_display = self.builder.get_object("input_file_display")
         
-        # set vars and update displays
+        # set var and update display
         self.input_path = _input_path
         input_file_display.set_text(self.input_path)
         
@@ -142,7 +142,7 @@ class Main:
         # get widgets
         output_file_display = self.builder.get_object("output_file_display")
         
-        # set vars and update displays
+        # set var and update display
         self.output_path = _output_path
         output_file_display.set_text(self.output_path)
         
