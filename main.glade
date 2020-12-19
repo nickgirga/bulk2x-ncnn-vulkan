@@ -42,6 +42,11 @@ Author: Nicholas Girga
     <property name="can-focus">False</property>
     <property name="stock">gtk-open</property>
   </object>
+  <object class="GtkImage" id="save_as_icon">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-save-as</property>
+  </object>
   <object class="GtkWindow" id="window0">
     <property name="can-focus">False</property>
     <property name="resizable">False</property>
@@ -67,7 +72,7 @@ Author: Nicholas Girga
                 <property name="margin-top">5</property>
                 <property name="margin-bottom">5</property>
                 <property name="hexpand">True</property>
-                <property name="label" translatable="yes">Use Directories:</property>
+                <property name="label" translatable="yes">Use directories (recursive):</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -325,10 +330,5 @@ Author: Nicholas Girga
         </child>
       </object>
     </child>
-  </object>
-  <object class="GtkImage" id="save_as_icon">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="stock">gtk-save-as</property>
   </object>
 </interface>
