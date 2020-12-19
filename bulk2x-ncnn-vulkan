@@ -183,7 +183,8 @@ class Main:
         _desired_file = self.on_open(self.use_directories, not self.use_directories, self.FILE_FILTER_NAMES, self.FILE_FILTER_PATTERNS)
         if (_desired_file != None and _desired_file != ""):
             self.set_input_path(_desired_file)
-            
+
+    # called when the save_file_button next to the output file/directory is clicked
     def save_file_button_clicked(self, object, data=None):
         _file_destination = self.on_save(not self.use_directories, self.FILE_FILTER_NAMES, self.FILE_FILTER_PATTERNS) if not self.use_directories else self.on_open(self.use_directories)
         if (_file_destination != None and _file_destination != ""):
