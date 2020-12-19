@@ -43,7 +43,7 @@ class Main:
 
     # simple popup window
     def create_simple_message_dialog(self, text, title="bulk2x", yesno=False, window=None):
-        message = Gtk.MessageDialog(window, 0, Gtk.MessageType.INFO, Gtk.ButtonsType.YES_NO if yesno else Gtk.ButtonsType.OK, text)
+        message = Gtk.MessageDialog(parent=window, flags=0, message_type=Gtk.MessageType.INFO, buttons=(Gtk.ButtonsType.YES_NO if yesno else Gtk.ButtonsType.OK), text=text)
         message.set_title(title)
         message.set_icon_name("window")
         response = message.run()
