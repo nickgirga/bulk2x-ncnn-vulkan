@@ -30,26 +30,26 @@ Author: Nicholas Girga
   <object class="GtkImage" id="about_icon">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
-    <property name="stock">gtk-about</property>
+    <property name="icon-name">gtk-about</property>
   </object>
+  <object class="GtkTextBuffer" id="details_text"/>
   <object class="GtkImage" id="file_icon">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
-    <property name="stock">gtk-file</property>
+    <property name="icon-name">gtk-file</property>
   </object>
   <object class="GtkImage" id="open_icon">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
-    <property name="stock">gtk-open</property>
+    <property name="icon-name">gtk-open</property>
   </object>
   <object class="GtkImage" id="save_as_icon">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
-    <property name="stock">gtk-save-as</property>
+    <property name="icon-name">gtk-save-as</property>
   </object>
   <object class="GtkWindow" id="window0">
     <property name="can-focus">False</property>
-    <property name="resizable">False</property>
     <property name="default-width">360</property>
     <property name="default-height">-1</property>
     <signal name="hide" handler="on_window0_destroy" swapped="no"/>
@@ -58,6 +58,42 @@ Author: Nicholas Girga
         <property name="visible">True</property>
         <property name="can-focus">False</property>
         <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkBox" id="start">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <child>
+              <object class="GtkProgressBar" id="progress_bar">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkToggleButton" id="start_button">
+                <property name="label" translatable="yes">Start</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="pack-type">end</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
         <child>
           <object class="GtkBox" id="use_directories">
             <property name="visible">True</property>
@@ -100,14 +136,16 @@ Author: Nicholas Girga
           </object>
           <packing>
             <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
+            <property name="fill">False</property>
+            <property name="position">1</property>
           </packing>
         </child>
         <child>
           <object class="GtkBox" id="input_file">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
+            <property name="valign">start</property>
+            <property name="vexpand">False</property>
             <child>
               <object class="GtkLabel" id="input_file_label">
                 <property name="visible">True</property>
@@ -154,14 +192,15 @@ Author: Nicholas Girga
           </object>
           <packing>
             <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
+            <property name="fill">False</property>
+            <property name="position">2</property>
           </packing>
         </child>
         <child>
           <object class="GtkExpander" id="settings_expander">
             <property name="visible">True</property>
             <property name="can-focus">True</property>
+            <property name="valign">start</property>
             <property name="margin-top">5</property>
             <property name="margin-bottom">5</property>
             <signal name="button-press-event" handler="settings_expander_button_press_event" swapped="no"/>
@@ -177,15 +216,16 @@ Author: Nicholas Girga
             </child>
           </object>
           <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-            <property name="position">2</property>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">3</property>
           </packing>
         </child>
         <child>
           <object class="GtkBox" id="output_file">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
+            <property name="valign">start</property>
             <child>
               <object class="GtkLabel" id="output_file_label">
                 <property name="visible">True</property>
@@ -233,44 +273,51 @@ Author: Nicholas Girga
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">3</property>
+            <property name="position">4</property>
           </packing>
         </child>
         <child>
-          <object class="GtkBox" id="start">
+          <object class="GtkExpander" id="details_expander">
             <property name="visible">True</property>
-            <property name="can-focus">False</property>
+            <property name="can-focus">True</property>
+            <property name="margin-top">5</property>
+            <property name="margin-bottom">5</property>
+            <property name="vexpand">True</property>
             <child>
-              <object class="GtkProgressBar" id="progress_bar">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="margin-top">5</property>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkToggleButton" id="start_button">
-                <property name="label" translatable="yes">Start</property>
+              <object class="GtkScrolledWindow" id="details_scrolled_window">
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
-                <property name="receives-default">True</property>
-                <property name="margin-top">5</property>
+                <property name="margin-start">5</property>
+                <property name="margin-end">5</property>
+                <property name="hexpand">True</property>
+                <property name="vexpand">True</property>
+                <property name="shadow-type">in</property>
+                <property name="min-content-height">118</property>
+                <property name="propagate-natural-height">True</property>
+                <child>
+                  <object class="GtkTextView" id="details_display">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="hexpand">True</property>
+                    <property name="vexpand">True</property>
+                    <property name="editable">False</property>
+                    <property name="buffer">details_text</property>
+                  </object>
+                </child>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
+            </child>
+            <child type="label">
+              <object class="GtkLabel" id="details_expander_label">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="label" translatable="yes">Details</property>
+              </object>
             </child>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">4</property>
+            <property name="position">5</property>
           </packing>
         </child>
       </object>
