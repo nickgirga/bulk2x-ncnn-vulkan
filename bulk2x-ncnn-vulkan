@@ -1,0 +1,95 @@
+#!/usr/bin/python
+# bulk2x-ncnn-vulkan
+# Version 1.0
+# Nicholas Girga
+# Released under GPL3 with ABSOLUTELY NO WARRANTY
+
+# Simple GUI to make it easy to use waifu2x with individual files and whole directories
+
+### imports
+import gi, os, sys, subprocess
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
+from os.path import expanduser
+from gi.repository import GdkPixbuf
+
+### define main class
+class Main:
+
+    use_directories = False
+
+    # initialize glade file
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.gladefile = "./main.glade"
+        self.builder = Gtk.Builder()
+        self.builder.add_from_file(self.gladefile)
+        self.builder.connect_signals(self)
+        self.window = self.builder.get_object("window0")
+        self.window.set_icon_name("window")
+        self.window.present()
+        
+    # quit with cancel
+    def on_window0_destroy(self, object, data=None):
+        self.main_loop_running = False
+        Gtk.main_quit()
+
+    # simple popup window
+    def create_simple_message_dialog(self, text, title="bulk2x", yesno=False, window=None):
+        message = Gtk.MessageDialog(window, 0, Gtk.MessageType.INFO, Gtk.ButtonsType.YES_NO if yesno else Gtk.ButtonsType.OK, text)
+        message.set_title(title)
+        message.set_icon_name("window")
+        response = message.run()
+        message.destroy()
+        return response
+
+    # called when switching between file and directory mode (true = directory mode)
+    def set_use_directories(self, value):
+        # get widgets
+        input_file_label = self.builder.get_object("input_file_label")
+        input_file_display = self.builder.get_object("input_file_display")
+        output_file_label = self.builder.get_object("output_file_label")
+        output_file_display = self.builder.get_object("output_file_display")
+        
+        # change widgets
+        input_file_label.set_property("label", "Input " + ("Directory" if value else "File") + ":")
+        input_file_display.set_property("placeholder_text", "$input_" + ("directory" if value else "file"))
+        output_file_label.set_property("label", "Output " + ("Directory" if value else "File") + ":")
+        output_file_display.set_property("placeholder_text", "$output_" + ("directory" if value else "file"))
+        
+        # set var
+        self.use_directories = value
+
+    # called when the file button in the header bar is clicked
+    def file_button_clicked(self, popover, data=None):
+        popover.popup()
+        
+    # called when about_button is pressed
+    def about_button_clicked(self, object, data=None):
+        about = Gtk.AboutDialog()
+        about.set_program_name("bulk2x")
+        about.set_version("1.0")
+        about.set_property("authors", ["Nicholas Girga"])
+        about.set_comments("Simple GUI to make it easy to use waifu2x with individual files and whole directories")
+        about.set_website("http://gitlab.com/nickgirga/bulk2x-ncnn-vulkan")
+        about.set_website_label("gitlab.com/nickgirga/bulk2x-ncnn-vulkan")
+        about.set_license_type(Gtk.License.GPL_3_0)
+        about.set_logo_icon_name("window")
+        about.set_icon_name("window")
+        
+        about.run()
+        about.destroy()
+        
+    # called when the use_directory_switch is toggled
+    def use_directories_switch_state_set(self, object, data=None):
+        self.set_use_directories(object.get_property("active"))
+        
+    def settings_expander_button_press_event(self, object, data=None):
+        object.set_expanded(False)
+        self.create_simple_message_dialog("Settings are still in development")
+        
+### start
+# create main instance
+if __name__ == "__main__":
+    main = Main()
+    Gtk.main()
