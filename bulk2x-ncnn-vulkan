@@ -51,7 +51,7 @@ class Main:
         return response
 
     # called when switching between file and directory mode (true = directory mode)
-    def set_use_directories(self, value):
+    def set_use_directories(self, value: bool):
         # get widgets
         input_file_label = self.builder.get_object("input_file_label")
         input_file_display = self.builder.get_object("input_file_display")
