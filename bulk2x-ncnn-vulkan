@@ -49,6 +49,15 @@ class Main:
         response = message.run()
         message.destroy()
         return response
+        
+    # add text to details_text text buffer
+    def add_to_details_log(self, text: str, new_line=True):
+        # get widget
+        details_text = self.builder.get_object("details_text")
+        
+        # save old details_text text and concatenate with text var
+        old_text = details_text.get_property("text")
+        details_text.set_text(old_text + text + ("\n" if new_line else ""))
 
     # called when switching between file and directory mode (true = directory mode)
     def set_use_directories(self, value: bool):
@@ -92,12 +101,8 @@ class Main:
             file_path = dialog.get_filename()
             dialog.destroy()
             return file_path
-        elif response == Gtk.ResponseType.CANCEL:
-            dialog.destroy()
-            return ""
-        
-        # just in case :P
         dialog.destroy()
+        return ""
     
     # show open dialog and return the desired file or directory path (default to files)
     def on_open(self, directories=False, use_filter=False, filter_name=[], filter_pattern=[]) -> str:
@@ -128,7 +133,7 @@ class Main:
 
     # allow start_button to be clicked if both an input path and an output path are defined
     def check_input_output(self):
-        # get widgets
+        # get widget
         start_button = self.builder.get_object("start_button")
         
         # check vars and set start_button sensitivity
@@ -136,7 +141,7 @@ class Main:
 
     # sets the input_path var and updates display
     def set_input_path(self, _input_path: str):
-        # get widgets
+        # get widget
         input_file_display = self.builder.get_object("input_file_display")
         
         # set var and update display
@@ -147,7 +152,7 @@ class Main:
         
     # sets the output_path var and updates display
     def set_output_path(self, _output_path: str):
-        # get widgets
+        # get widget
         output_file_display = self.builder.get_object("output_file_display")
         
         # set var and update display
