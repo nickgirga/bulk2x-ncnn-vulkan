@@ -77,6 +77,7 @@ Author: Nicholas Girga
               <object class="GtkToggleButton" id="start_button">
                 <property name="label" translatable="yes">Start</property>
                 <property name="visible">True</property>
+                <property name="sensitive">False</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
               </object>

@@ -126,6 +126,14 @@ class Main:
         dialog.destroy()
         return ""
 
+    # allow start_button to be clicked if both an input path and an output path are defined
+    def check_input_output(self):
+        # get widgets
+        start_button = self.builder.get_object("start_button")
+        
+        # check vars and set start_button sensitivity
+        start_button.set_property("sensitive", self.input_path != "" and self.input_path != None and self.output_path != "" and self.output_path != None)
+
     # sets the input_path var and updates display
     def set_input_path(self, _input_path: str):
         # get widgets
@@ -135,6 +143,8 @@ class Main:
         self.input_path = _input_path
         input_file_display.set_text(self.input_path)
         
+        self.check_input_output()
+        
     # sets the output_path var and updates display
     def set_output_path(self, _output_path: str):
         # get widgets
@@ -142,8 +152,9 @@ class Main:
         
         # set var and update display
         self.output_path = _output_path
-        output_file_display.set_text(self.output_path)
+        output_file_display.set_text(self.output_path)     
         
+        self.check_input_output()   
 
     # called when the file button in the header bar is clicked
     def file_button_clicked(self, popover, data=None):
