@@ -80,6 +80,7 @@ Author: Nicholas Girga
                 <property name="sensitive">False</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
+                <property name="tooltip-text" translatable="yes">Both the input and output must be set before starting</property>
               </object>
               <packing>
                 <property name="expand">False</property>

@@ -136,8 +136,10 @@ class Main:
         # get widget
         start_button = self.builder.get_object("start_button")
         
-        # check vars and set start_button sensitivity
-        start_button.set_property("sensitive", self.input_path != "" and self.input_path != None and self.output_path != "" and self.output_path != None)
+        # check vars and set start_button sensitivity and tooltip
+        paths_filled = self.input_path != "" and self.input_path != None and self.output_path != "" and self.output_path != None
+        start_button.set_property("sensitive", paths_filled)
+        start_button.set_tooltip_text("Both the input and output must be set before starting" if not paths_filled else "")
 
     # sets the input_path var and updates display
     def set_input_path(self, _input_path: str):
