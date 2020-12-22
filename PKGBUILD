@@ -20,5 +20,6 @@ package() {
     install -Dm755 ./bulk2x-ncnn-vulkan "$pkgdir/usr/bin/bulk2x-ncnn-vulkan"
     install -Dm644 ./main.glade "$pkgdir/usr/share/bulk2x-ncnn-vulkan/main.glade"
     install -Dm644 ./res/icon.svg "$pkgdir/usr/share/bulk2x-ncnn-vulkan/res/icon.svg"
+    install -Dm644 ./res/logo.png "$pkgdir/usr/share/bulk2x-ncnn-vulkan/res/logo.png"
     install -Dm644 ./bulk2x-ncnn-vulkan.desktop "$pkgdir/usr/share/applications/bulk2x-ncnn-vulkan.desktop"
 }

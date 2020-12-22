@@ -23,6 +23,8 @@ class Main:
     SYSTEM_GLADE_FILE_PATH = "/usr/share/bulk2x-ncnn-vulkan/main.glade"
     LOCAL_ICON_FILE_PATH = "./res/icon.svg"
     SYSTEM_ICON_FILE_PATH = "/usr/share/bulk2x-ncnn-vulkan/res/icon.svg"
+    LOCAL_LOGO_FILE_PATH = "./res/logo.png"
+    SYSTEM_LOGO_FILE_PATH = "/usr/share/bulk2x-ncnn-vulkan/res/logo.png"
 
     # define vars
     use_directories = False
@@ -200,14 +202,14 @@ class Main:
         about.set_website_label("gitlab.com/nickgirga/bulk2x-ncnn-vulkan")
         about.set_license_type(Gtk.License.GPL_3_0)
         pixbuf = GdkPixbuf.Pixbuf()
-        if (os.path.isfile(self.LOCAL_ICON_FILE_PATH)):
-            pixbuf = GdkPixbuf.Pixbuf.new_from_file(self.LOCAL_ICON_FILE_PATH)
+        if (os.path.isfile(self.LOCAL_LOGO_FILE_PATH)):
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file(self.LOCAL_LOGO_FILE_PATH)
             about.set_logo(pixbuf)
-        elif (os.path.isfile(self.SYSTEM_ICON_FILE_PATH)):
-            pixbuf = GdkPixbuf.Pixbuf.new_from_file(self.SYSTEM_ICON_FILE_PATH)
+        elif (os.path.isfile(self.SYSTEM_LOGO_FILE_PATH)):
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file(self.SYSTEM_LOGO_FILE_PATH)
             about.set_logo(pixbuf)
         else:
-            self.create_simple_message_dialog("ERR: No icon found at \"" + self.SYSTEM_ICON_FILE_PATH + "\" or at \"" + self.LOCAL_ICON_FILE_PATH + "\" in the working directory.", "bulk2x - Error")
+            self.create_simple_message_dialog("ERR: No icon found at \"" + self.SYSTEM_LOGO_FILE_PATH + "\" or at \"" + self.LOCAL_LOGO_FILE_PATH + "\" in the working directory.", "bulk2x - Error")
             about.set_logo_icon_name("window")
         if (os.path.isfile(self.LOCAL_ICON_FILE_PATH)):
             about.set_icon_from_file(self.LOCAL_ICON_FILE_PATH)
