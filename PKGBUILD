@@ -1,6 +1,6 @@
 # Maintainer: Nicholas Girga <contact@nickgirga.com>
 pkgname='bulk2x-ncnn-vulkan'
-pkgver=r18.e057a4d
+pkgver=r20.a7d5275
 pkgrel=1
 pkgdesc="Simple GUI to make it easy to use waifu2x-ncnn-vulkan"
 arch=('any')

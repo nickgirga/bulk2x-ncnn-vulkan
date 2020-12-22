@@ -32,7 +32,13 @@ class Main:
     # initialize glade file
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.gladefile = "./main.glade"
+        if (os.path.isfile(self.LOCAL_GLADE_FILE_PATH)):
+            self.gladefile = self.LOCAL_GLADE_FILE_PATH
+        elif (os.path.isfile(self.SYSTEM_GLADE_FILE_PATH)):
+            self.gladefile = self.SYSTEM_GLADE_FILE_PATH
+        else:
+            self.create_simple_message_dialog("ERR: no \"main.glade\" file found at \"" + self.SYSTEM_GLADE_FILE_PATH + "\" or at \"" + self.LOCAL_GLADE_FILE_PATH + "\" in the working directory", "bulk2x - Error")
+            sys.exit()
         self.builder = Gtk.Builder()
         self.builder.add_from_file(self.gladefile)
         self.builder.connect_signals(self)
