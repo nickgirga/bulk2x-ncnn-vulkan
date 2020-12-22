@@ -4,7 +4,7 @@
 # Nicholas Girga
 # Released under GPL3 with ABSOLUTELY NO WARRANTY
 
-# Simple GUI to make it easy to use waifu2x with individual files and whole directories
+# Simple GUI to make it easy to use waifu2x-ncnn-vulkan with individual files and whole directories
 
 ### imports
 import gi, os, sys, subprocess
