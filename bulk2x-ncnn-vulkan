@@ -19,6 +19,10 @@ class Main:
     # define consts
     FILE_FILTER_NAMES = ["Portable Network Graphics Format (*.png)", "Joint Photographic Experts Group Format (*.jpeg, *.jpg)"]
     FILE_FILTER_PATTERNS = ["*.png", "*.jpeg"]
+    LOCAL_GLADE_FILE_PATH = "./main.glade"
+    SYSTEM_GLADE_FILE_PATH = "/usr/share/bulk2x-ncnn-vulkan/main.glade"
+    LOCAL_ICON_FILE_PATH = "./res/icon.svg"
+    SYSTEM_ICON_FILE_PATH = "/usr/share/bulk2x-ncnn-vulkan/res/icon.svg"
 
     # define vars
     use_directories = False
@@ -33,7 +37,13 @@ class Main:
         self.builder.add_from_file(self.gladefile)
         self.builder.connect_signals(self)
         self.window = self.builder.get_object("window0")
-        self.window.set_icon_name("window")
+        if (os.path.isfile(self.LOCAL_ICON_FILE_PATH)):
+            self.window.set_icon_from_file(self.LOCAL_ICON_FILE_PATH)
+        elif (os.path.isfile(self.SYSTEM_ICON_FILE_PATH)):
+            self.window.set_icon_from_file(self.SYSTEM_ICON_FILE_PATH)
+        else:
+            self.create_simple_message_dialog("ERR: No icon found at \"" + self.SYSTEM_ICON_FILE_PATH + "\" or at \"" + self.LOCAL_ICON_FILE_PATH + "\" in the working directory.","bulk2x - Error")
+            self.window.set_icon_name("window")
         self.window.present()
         
     # quit with cancel
@@ -45,7 +55,13 @@ class Main:
     def create_simple_message_dialog(self, text, title="bulk2x", yesno=False, window=None):
         message = Gtk.MessageDialog(parent=window, flags=0, message_type=Gtk.MessageType.INFO, buttons=(Gtk.ButtonsType.YES_NO if yesno else Gtk.ButtonsType.OK), text=text)
         message.set_title(title)
-        message.set_icon_name("window")
+        if (os.path.isfile(self.LOCAL_ICON_FILE_PATH)):
+            message.set_icon_from_file(self.LOCAL_ICON_FILE_PATH)
+        elif (os.path.isfile(self.SYSTEM_ICON_FILE_PATH)):
+            message.set_icon_from_file(self.SYSTEM_ICON_FILE_PATH)
+        else:
+            print("ERR: No icon found at \"" + self.SYSTEM_ICON_FILE_PATH + "\" or at \"" + self.LOCAL_ICON_FILE_PATH + "\" in the working directory.")
+            message.set_icon_name("window")
         response = message.run()
         message.destroy()
         return response
@@ -177,8 +193,23 @@ class Main:
         about.set_website("http://gitlab.com/nickgirga/bulk2x-ncnn-vulkan")
         about.set_website_label("gitlab.com/nickgirga/bulk2x-ncnn-vulkan")
         about.set_license_type(Gtk.License.GPL_3_0)
-        about.set_logo_icon_name("window")
-        about.set_icon_name("window")
+        pixbuf = GdkPixbuf.Pixbuf()
+        if (os.path.isfile(self.LOCAL_ICON_FILE_PATH)):
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file(self.LOCAL_ICON_FILE_PATH)
+            about.set_logo(pixbuf)
+        elif (os.path.isfile(self.SYSTEM_ICON_FILE_PATH)):
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file(self.SYSTEM_ICON_FILE_PATH)
+            about.set_logo(pixbuf)
+        else:
+            self.create_simple_message_dialog("ERR: No icon found at \"" + self.SYSTEM_ICON_FILE_PATH + "\" or at \"" + self.LOCAL_ICON_FILE_PATH + "\" in the working directory.", "bulk2x - Error")
+            about.set_logo_icon_name("window")
+        if (os.path.isfile(self.LOCAL_ICON_FILE_PATH)):
+            about.set_icon_from_file(self.LOCAL_ICON_FILE_PATH)
+        elif (os.path.isfile(self.SYSTEM_ICON_FILE_PATH)):
+            about.set_icon_from_file(self.SYSTEM_ICON_FILE_PATH)
+        else:
+            self.create_simple_message_dialog("ERR: No icon found at \"" + self.SYSTEM_ICON_FILE_PATH + "\" or at \"" + self.LOCAL_ICON_FILE_PATH + "\" in the working directory.","bulk2x - Error")
+            about.set_icon_name("window")
         
         about.run()
         about.destroy()
