@@ -10,6 +10,7 @@
 import gi, os, sys, subprocess
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
+from threading import Thread
 from os.path import expanduser
 from gi.repository import GdkPixbuf
 
@@ -195,7 +196,7 @@ class Main:
         command_textbox = self.builder.get_object("command_textbox")
 
         # concatenate and return
-        return command_textbox.get_text().format(input = "\"" + _input + "\"", output = "\"" + _output + "\"")
+        return command_textbox.get_text().format(input = _input, output = _output)
 
     # return a list of files within a directory recursively
     def get_files_in_dir(self, dir: str) -> []:
@@ -210,6 +211,15 @@ class Main:
                 for g in temp1:
                     temp0.append(g)
         return temp0
+
+    # upscale image using the parameters set in the command var
+    def upscale_image(self, command: str):
+        # log command and execute it
+        self.add_to_details_log("> " + command)
+        subprocess.call(command.split())
+        
+        # log when finished
+        self.add_to_details_log("Finished processing file!")
 
     # called when the file button in the header bar is clicked
     def file_button_clicked(self, popover, data=None):
@@ -272,31 +282,43 @@ class Main:
                 # check if input_path is a file
                 if (not os.path.isfile(self.input_path)):
                     self.create_simple_message_dialog("Input path must be set to a file when \"Use directories\" is disabled", "bulk2x - Error")
+                    return
 
-                # check if output_path is a file
-                if (not os.path.isfile(self.output_path)):
+                # check if output_path is a directory
+                if (os.path.isdir(self.output_path)):
                     self.create_simple_message_dialog("Output path must be set to a file when \"Use directories\" is disabled", "bulk2x - Error")
+                    return
 
-                # get command, log it, and execute it
+                # get command and upscale image
                 command = self.get_command(self.input_path, self.output_path)
-                self.add_to_details_log("> " + command)
-                # to-do: call waifu2x-ncnn-vulkan and add output to details log
+                thread = Thread(target=self.upscale_image(command))
+                thread.start()
+                # to-do: fix threading/halting; implement progress bar
+                
+                # set start_button to inactive
+                object.set_property("active", False)
             else:
                 # check if input_path is a directory
                 if (not os.path.isdir(self.input_path)):
                     self.create_simple_message_dialog("Input path must be set to a directory when \"Use directories\" is enabled", "bulk2x - Error")
+                    return
 
                 # check if output_path is a directory
                 if (not os.path.isdir(self.output_path)):
                     self.create_simple_message_dialog("Output path must be set to a directory when \"Use directories\" is enabled", "bulk2x - Error")
+                    return
 
                 # get files in directory at input_path
                 files = self.get_files_in_dir(self.input_path)
                 for f in files:
-                    # for each file in the directory at input_path, get command, log it, and execute it
+                    # for each file in the directory at input_path, get command and upscale image
                     command = self.get_command(f, self.output_path + f[len(self.input_path):])
-                    self.add_to_details_log("> " + command)
-                    # to-do: call waifu2x-ncnn-vulkan and add output to details log
+                    thread = Thread(target=self.upscale_image(command))
+                    thread.start()
+                    # to-do: fix threading/halting; implement progress bar
+                    
+                # set start_button to inactive
+                object.set_property("active", False)
         else:
             # start button raised
             print("*Stopping waifu2x-ncnn-vulkan loop*")
