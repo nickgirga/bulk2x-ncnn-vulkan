@@ -75,9 +75,10 @@ class Main:
         return response
 
     # add text to details_text text buffer
-    def add_to_details_log(self, text: str, new_line=True):
+    def add_to_details_log(self, text: str, new_line=True, print_to_terminal=True):
         # print to terminal
-        print(text)
+        if (print_to_terminal):
+            print(text)
     
         # get widget
         details_text = self.builder.get_object("details_text")
