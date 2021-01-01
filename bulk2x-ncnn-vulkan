@@ -4,7 +4,7 @@
 # Nicholas Girga
 # Released under GPL3 with ABSOLUTELY NO WARRANTY
 
-# Simple GUI to make it easy to use waifu2x-ncnn-vulkan with individual files and whole directories
+# Simple GUI to make it easy to use waifu2x-ncnn-vulkan
 
 ### imports
 import gi, os, sys, subprocess
@@ -53,7 +53,7 @@ class Main:
             self.create_simple_message_dialog("ERR: No icon found at \"" + self.SYSTEM_ICON_FILE_PATH + "\" or at \"" + self.LOCAL_ICON_FILE_PATH + "\" in the working directory.","bulk2x - Error")
             self.window.set_icon_name("window")
         self.window.present()
-        
+
     # quit with cancel
     def on_window0_destroy(self, object, data=None):
         self.main_loop_running = False
@@ -73,12 +73,15 @@ class Main:
         response = message.run()
         message.destroy()
         return response
-        
+
     # add text to details_text text buffer
     def add_to_details_log(self, text: str, new_line=True):
+        # print to terminal
+        print(text)
+    
         # get widget
         details_text = self.builder.get_object("details_text")
-        
+
         # save old details_text text and concatenate with text var
         old_text = details_text.get_property("text")
         details_text.set_text(old_text + text + ("\n" if new_line else ""))
@@ -90,13 +93,13 @@ class Main:
         input_file_display = self.builder.get_object("input_file_display")
         output_file_label = self.builder.get_object("output_file_label")
         output_file_display = self.builder.get_object("output_file_display")
-        
+
         # change widgets
         input_file_label.set_property("label", "Input " + ("Directory" if value else "File") + ":")
         input_file_display.set_property("placeholder_text", "$input_" + ("directory" if value else "file"))
         output_file_label.set_property("label", "Output " + ("Directory" if value else "File") + ":")
         output_file_display.set_property("placeholder_text", "$output_" + ("directory" if value else "file"))
-        
+
         # set var
         self.use_directories = value
 
@@ -127,7 +130,7 @@ class Main:
             return file_path
         dialog.destroy()
         return ""
-    
+
     # show open dialog and return the desired file or directory path (default to files)
     def on_open(self, directories=False, use_filter=False, filter_name=[], filter_pattern=[]) -> str:
         # create and setup dialog
@@ -159,7 +162,7 @@ class Main:
     def check_input_output(self):
         # get widget
         start_button = self.builder.get_object("start_button")
-        
+
         # check vars and set start_button sensitivity and tooltip
         paths_filled = self.input_path != "" and self.input_path != None and self.output_path != "" and self.output_path != None
         start_button.set_property("sensitive", paths_filled)
@@ -169,35 +172,56 @@ class Main:
     def set_input_path(self, _input_path: str):
         # get widget
         input_file_display = self.builder.get_object("input_file_display")
-        
+
         # set var and update display
         self.input_path = _input_path
         input_file_display.set_text(self.input_path)
-        
+
         self.check_input_output()
-        
+
     # sets the output_path var and updates display
     def set_output_path(self, _output_path: str):
         # get widget
         output_file_display = self.builder.get_object("output_file_display")
-        
+
         # set var and update display
         self.output_path = _output_path
         output_file_display.set_text(self.output_path)     
-        
+
         self.check_input_output()   
+
+    # contatenate the command using the command_textbox, input, and output
+    def get_command(self, _input: str, _output: str) -> str:
+        # get widget
+        command_textbox = self.builder.get_object("command_textbox")
+
+        # concatenate and return
+        return command_textbox.get_text().format(input = "\"" + _input + "\"", output = "\"" + _output + "\"")
+
+    def get_files_in_dir(self, dir: str) -> []:
+        temp0 = []
+        d = os.listdir(dir)
+        for f in d:
+            file = dir + "/" + f
+            if (os.path.isfile(file)):
+                temp0.append(file)
+            elif (os.path.isdir(file)):
+                temp1 = self.get_files_in_dir(file)
+                for g in temp1:
+                    temp0.append(g)
+        return temp0
 
     # called when the file button in the header bar is clicked
     def file_button_clicked(self, popover, data=None):
         popover.popup()
-        
+
     # called when about_button is pressed
     def about_button_clicked(self, object, data=None):
         about = Gtk.AboutDialog()
         about.set_program_name("bulk2x")
         about.set_version("1.0")
         about.set_property("authors", ["Nicholas Girga"])
-        about.set_comments("Simple GUI to make it easy to use waifu2x with individual files and whole directories")
+        about.set_comments("Simple GUI to make it easy to use waifu2x-ncnn-vulkan")
         about.set_website("http://gitlab.com/nickgirga/bulk2x-ncnn-vulkan")
         about.set_website_label("gitlab.com/nickgirga/bulk2x-ncnn-vulkan")
         about.set_license_type(Gtk.License.GPL_3_0)
@@ -218,21 +242,16 @@ class Main:
         else:
             self.create_simple_message_dialog("ERR: No icon found at \"" + self.SYSTEM_ICON_FILE_PATH + "\" or at \"" + self.LOCAL_ICON_FILE_PATH + "\" in the working directory.","bulk2x - Error")
             about.set_icon_name("window")
-        
+
         about.run()
         about.destroy()
-        
+
     # called when the use_directory_switch is toggled
     def use_directories_switch_state_set(self, object, data=None):
         self.set_input_path("")
         self.set_output_path("")
         self.set_use_directories(object.get_property("active"))
-        
-    # called when the settings_expander is clicked (temporary)
-    def settings_expander_button_press_event(self, object, data=None):
-        object.set_expanded(False)
-        self.create_simple_message_dialog("Settings are still in development")
-        
+
     # called when the open_file_button next to the input file/directory is clicked
     def open_file_button_clicked(self, object, data=None):
         _desired_file = self.on_open(self.use_directories, not self.use_directories, self.FILE_FILTER_NAMES, self.FILE_FILTER_PATTERNS)
@@ -244,7 +263,44 @@ class Main:
         _file_destination = self.on_save(not self.use_directories, self.FILE_FILTER_NAMES, self.FILE_FILTER_PATTERNS) if not self.use_directories else self.on_open(self.use_directories)
         if (_file_destination != None and _file_destination != ""):
             self.set_output_path(_file_destination)
-            
+
+    # called when the start_button is toggled
+    def start_button_toggled(self, object, data=None):
+        if (object.get_property("active")):
+            # start button depressed
+            if (not self.use_directories):
+                # check if input_path is a file
+                if (not os.path.isfile(self.input_path)):
+                    self.create_simple_message_dialog("Input path must be set to a file when \"Use directories\" is disabled", "bulk2x - Error")
+
+                # check if output_path is a file
+                if (not os.path.isfile(self.output_path)):
+                    self.create_simple_message_dialog("Output path must be set to a file when \"Use directories\" is disabled", "bulk2x - Error")
+
+                # get command, log it, and execute it
+                command = self.get_command(self.input_path, self.output_path)
+                self.add_to_details_log("> " + command)
+                # to-do: call waifu2x-ncnn-vulkan and add output to details log
+            else:
+                # check if input_path is a directory
+                if (not os.path.isdir(self.input_path)):
+                    self.create_simple_message_dialog("Input path must be set to a directory when \"Use directories\" is enabled", "bulk2x - Error")
+
+                # check if output_path is a directory
+                if (not os.path.isdir(self.output_path)):
+                    self.create_simple_message_dialog("Output path must be set to a directory when \"Use directories\" is enabled", "bulk2x - Error")
+
+                # get files in directory at input_path
+                files = self.get_files_in_dir(self.input_path)
+                for f in files:
+                    # for each file in the directory at input_path, get command, log it, and execute it
+                    command = self.get_command(f, self.output_path + f[len(self.input_path):])
+                    self.add_to_details_log("> " + command)
+                    # to-do: call waifu2x-ncnn-vulkan and add output to details log
+        else:
+            # start button raised
+            print("*Stopping waifu2x-ncnn-vulkan loop*")
+            # to-do: kill loop
         
 ### start
 # create main instance
