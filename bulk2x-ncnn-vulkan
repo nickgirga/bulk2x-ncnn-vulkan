@@ -96,9 +96,9 @@ class Main:
 
         # change widgets
         input_file_label.set_property("label", "Input " + ("Directory" if value else "File") + ":")
-        input_file_display.set_property("placeholder_text", "$input_" + ("directory" if value else "file"))
+        input_file_display.set_property("placeholder_text", "{input}")
         output_file_label.set_property("label", "Output " + ("Directory" if value else "File") + ":")
-        output_file_display.set_property("placeholder_text", "$output_" + ("directory" if value else "file"))
+        output_file_display.set_property("placeholder_text", "{output}")
 
         # set var
         self.use_directories = value
