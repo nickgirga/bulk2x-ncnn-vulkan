@@ -198,6 +198,7 @@ class Main:
         # concatenate and return
         return command_textbox.get_text().format(input = "\"" + _input + "\"", output = "\"" + _output + "\"")
 
+    # return a list of files within a directory recursively
     def get_files_in_dir(self, dir: str) -> []:
         temp0 = []
         d = os.listdir(dir)
