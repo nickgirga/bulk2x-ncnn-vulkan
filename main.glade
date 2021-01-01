@@ -168,7 +168,7 @@ Author: Nicholas Girga
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="editable">False</property>
-                <property name="placeholder-text" translatable="yes">$input_file</property>
+                <property name="placeholder-text" translatable="yes">{input}</property>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -359,7 +359,7 @@ Author: Nicholas Girga
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="editable">False</property>
-                <property name="placeholder-text" translatable="yes">$output_file</property>
+                <property name="placeholder-text" translatable="yes">{output}</property>
               </object>
               <packing>
                 <property name="expand">True</property>
