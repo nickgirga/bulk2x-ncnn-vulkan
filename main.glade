@@ -30,23 +30,23 @@ Author: Nicholas Girga
   <object class="GtkImage" id="about_icon">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
-    <property name="icon-name">gtk-about</property>
+    <property name="icon-name">help-about</property>
   </object>
   <object class="GtkTextBuffer" id="details_text"/>
   <object class="GtkImage" id="file_icon">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
-    <property name="icon-name">gtk-file</property>
+    <property name="icon-name">preferences-other</property>
   </object>
   <object class="GtkImage" id="open_icon">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
-    <property name="icon-name">gtk-open</property>
+    <property name="icon-name">document-open</property>
   </object>
   <object class="GtkImage" id="save_as_icon">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
-    <property name="icon-name">gtk-save-as</property>
+    <property name="icon-name">document-save-as</property>
   </object>
   <object class="GtkWindow" id="window0">
     <property name="can-focus">False</property>
@@ -66,6 +66,8 @@ Author: Nicholas Girga
               <object class="GtkProgressBar" id="progress_bar">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="margin-start">5</property>
+                <property name="margin-bottom">5</property>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -81,6 +83,9 @@ Author: Nicholas Girga
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
                 <property name="tooltip-text" translatable="yes">Both the input and output must be set before starting</property>
+                <property name="margin-start">5</property>
+                <property name="margin-end">5</property>
+                <property name="margin-bottom">5</property>
                 <signal name="toggled" handler="start_button_toggled" swapped="no"/>
               </object>
               <packing>
@@ -290,7 +295,7 @@ Author: Nicholas Girga
                                 <property name="can-focus">True</property>
                                 <property name="margin-start">5</property>
                                 <property name="margin-end">5</property>
-                                <property name="text" translatable="yes">waifu2x-ncnn-vulkan -i {input} -o {output}</property>
+                                <property name="text" translatable="yes">waifu2x-ncnn-vulkan -i "{input}" -o "{output}"</property>
                               </object>
                               <packing>
                                 <property name="expand">True</property>
