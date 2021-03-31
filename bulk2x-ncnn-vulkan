@@ -27,10 +27,14 @@ class Main:
     LOCAL_LOGO_FILE_PATH = "./res/logo.png"
     SYSTEM_LOGO_FILE_PATH = "/usr/share/bulk2x-ncnn-vulkan/res/logo.png"
 
+    SYS_BASE_COMMAND = "waifu2x-ncnn-vulkan -i {input} -o {output}"
+    LOCAL_BASE_COMMAND = "./waifu2x-ncnn-vulkan-20210210-ubuntu/waifu2x-ncnn-vulkan -i {input} -o {output}"
+
     # define vars
     use_directories = False
     input_path = ""
     output_path = ""
+    base_command = SYS_BASE_COMMAND
 
     # initialize glade file
     def __init__(self, **kwargs):
@@ -55,14 +59,22 @@ class Main:
             self.window.set_icon_name("window")
         self.window.present()
 
-        failed = False
+        failed_syscall = False
+        failed_localcall = False
 
         try:
-            subprocess.run(["waifu2x-ncnn-vulkan", "-h"])
+            subprocess.run(["waifu2x-ncnn-vulkan", "-h"], capture_output=True)
+            self.base_command = self.SYS_BASE_COMMAND
         except Exception as e:
-            failed = True
+            failed_syscall = True
 
-        if (failed):
+        try:
+            subprocess.run(["./waifu2x-ncnn-vulkan-20210210-ubuntu/waifu2x-ncnn-vulkan", "-h"], capture_output=True)
+            self.base_command = self.LOCAL_BASE_COMMAND
+        except Exception as e:
+            failed_localcall = True
+
+        if (failed_syscall and failed_localcall):
             response = self.create_simple_message_dialog("Failed to run waifu2x-ncnn-vulkan! Do you want to download the latest binaries from GitHub?", "bulk2x - Error", True)
             if (response == Gtk.ResponseType.YES):
                 try:
@@ -75,6 +87,17 @@ class Main:
                     subprocess.run(["unzip", "waifu2x-ncnn-vulkan-20210210-ubuntu.zip"])
                 except Exception as e:
                     self.create_simple_message_dialog("Failed to unzip archive from GitHub!\n" + str(e), "bulk2x - Error")
+                    return
+
+                try:
+                    os.remove("waifu2x-ncnn-vulkan-20210210-ubuntu.zip")
+                except Exception as e:
+                    self.create_simple_message_dialog("Failed to remove unzipped archive!\n" + str(e), "bulk2x - Error")
+                    return
+
+                self.base_command = self.LOCAL_BASE_COMMAND
+
+        self.builder.get_object("command_textbox").set_text(self.base_command)
 
     # quit with cancel
     def on_window0_destroy(self, object, data=None):
@@ -113,9 +136,7 @@ class Main:
     def set_use_directories(self, value: bool):
         # get widgets
         input_file_label = self.builder.get_object("input_file_label")
-        input_file_display = self.builder.get_object("input_file_display")
         output_file_label = self.builder.get_object("output_file_label")
-        output_file_display = self.builder.get_object("output_file_display")
 
         # change widgets
         input_file_label.set_property("label", "Input " + ("Directory" if value else "File") + ":")
@@ -217,7 +238,7 @@ class Main:
         command_textbox = self.builder.get_object("command_textbox")
 
         # concatenate and return
-        return command_textbox.get_text().format(input = "\"" + _input + "\"", output = "\"" + _output + "\"")
+        return command_textbox.get_text().format(input = _input, output = _output) # TODO return as list; refactor references to this function
 
     # return a list of files within a directory recursively
     def get_files_in_dir(self, dir: str) -> []:
@@ -237,7 +258,9 @@ class Main:
     def upscale_image(self, command: str):
         # log command and execute it
         self.add_to_details_log("> " + command)
-        subprocess.call(command.split())
+        print("Split: " + str(command.split()))
+        output = subprocess.run(command.split(), capture_output=True)
+        self.add_to_details_log(output.stderr.decode('utf-8'))
         
         # log when finished
         self.add_to_details_log("Finished processing file!")
