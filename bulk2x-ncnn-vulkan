@@ -55,6 +55,27 @@ class Main:
             self.window.set_icon_name("window")
         self.window.present()
 
+        failed = False
+
+        try:
+            subprocess.run(["waifu2x-ncnn-vulkan", "-h"])
+        except Exception as e:
+            failed = True
+
+        if (failed):
+            response = self.create_simple_message_dialog("Failed to run waifu2x-ncnn-vulkan! Do you want to download the latest binaries from GitHub?", "bulk2x - Error", True)
+            if (response == Gtk.ResponseType.YES):
+                try:
+                    subprocess.run(["wget", "https://github.com/nihui/waifu2x-ncnn-vulkan/releases/download/20210210/waifu2x-ncnn-vulkan-20210210-ubuntu.zip"])
+                except Exception as e:
+                    self.create_simple_message_dialog("Failed to download from GitHub!\n" + str(e), "bulk2x - Error")
+                    return
+                
+                try:
+                    subprocess.run(["unzip", "waifu2x-ncnn-vulkan-20210210-ubuntu.zip"])
+                except Exception as e:
+                    self.create_simple_message_dialog("Failed to unzip archive from GitHub!\n" + str(e), "bulk2x - Error")
+
     # quit with cancel
     def on_window0_destroy(self, object, data=None):
         self.main_loop_running = False
