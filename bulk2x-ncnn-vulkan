@@ -78,6 +78,8 @@ class Main:
 
         response = self.create_simple_message_dialog("Failed to run waifu2x-ncnn-vulkan! Do you want to download the binaries from GitHub (Release 20210210)?", "bulk2x - Error", True)
         if (response == Gtk.ResponseType.YES):
+            self.create_simple_message_dialog("Downloading and extracting binaries from GitHub. The application may stop responding until the download and extraction is complete. This will depend on the speed of your internet and CPU.")
+
             try:
                 subprocess.run(["wget", "https://github.com/nihui/waifu2x-ncnn-vulkan/releases/download/20210210/waifu2x-ncnn-vulkan-20210210-ubuntu.zip"])
             except Exception as e:
