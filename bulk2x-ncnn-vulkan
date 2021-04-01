@@ -27,14 +27,14 @@ class Main:
     LOCAL_LOGO_FILE_PATH = "./res/logo.png"
     SYSTEM_LOGO_FILE_PATH = "/usr/share/bulk2x-ncnn-vulkan/res/logo.png"
 
-    SYS_BASE_COMMAND = "waifu2x-ncnn-vulkan -i {input} -o {output}"
-    LOCAL_BASE_COMMAND = "./waifu2x-ncnn-vulkan-20210210-ubuntu/waifu2x-ncnn-vulkan -i {input} -o {output}"
+    SYS_BASE_COMMAND = "waifu2x-ncnn-vulkan"
+    LOCAL_BASE_COMMAND = "./waifu2x-ncnn-vulkan-20210210-ubuntu/waifu2x-ncnn-vulkan"
+    BASE_COMMAND_OPTIONS = "-i {input} -o {output}"
 
     # define vars
     use_directories = False
     input_path = ""
     output_path = ""
-    base_command = SYS_BASE_COMMAND
 
     # initialize glade file
     def __init__(self, **kwargs):
@@ -59,45 +59,46 @@ class Main:
             self.window.set_icon_name("window")
         self.window.present()
 
-        failed_syscall = False
-        failed_localcall = False
+        # set the default command
+        self.builder.get_object("command_textbox").set_text(self.get_base_command())
+
+    # returns the base command without input/output paths
+    def get_base_command(self) -> str:
+        try:
+            subprocess.run([self.SYS_BASE_COMMAND, "-h"], capture_output=True)
+            return self.SYS_BASE_COMMAND + " " + self.BASE_COMMAND_OPTIONS
+        except Exception as e:
+            print("System command failed!\n" + str(e))
 
         try:
-            subprocess.run(["waifu2x-ncnn-vulkan", "-h"], capture_output=True)
-            self.base_command = self.SYS_BASE_COMMAND
+            subprocess.run([self.LOCAL_BASE_COMMAND, "-h"], capture_output=True)
+            return self.LOCAL_BASE_COMMAND + " " + self.BASE_COMMAND_OPTIONS
         except Exception as e:
-            failed_syscall = True
+            print("Local command failed!\n" + str(e))
 
-        try:
-            subprocess.run(["./waifu2x-ncnn-vulkan-20210210-ubuntu/waifu2x-ncnn-vulkan", "-h"], capture_output=True)
-            self.base_command = self.LOCAL_BASE_COMMAND
-        except Exception as e:
-            failed_localcall = True
-
-        if (failed_syscall and failed_localcall):
-            response = self.create_simple_message_dialog("Failed to run waifu2x-ncnn-vulkan! Do you want to download the latest binaries from GitHub?", "bulk2x - Error", True)
-            if (response == Gtk.ResponseType.YES):
-                try:
-                    subprocess.run(["wget", "https://github.com/nihui/waifu2x-ncnn-vulkan/releases/download/20210210/waifu2x-ncnn-vulkan-20210210-ubuntu.zip"])
-                except Exception as e:
-                    self.create_simple_message_dialog("Failed to download from GitHub!\n" + str(e), "bulk2x - Error")
-                    return
+        response = self.create_simple_message_dialog("Failed to run waifu2x-ncnn-vulkan! Do you want to download the latest binaries from GitHub?", "bulk2x - Error", True)
+        if (response == Gtk.ResponseType.YES):
+            try:
+                subprocess.run(["wget", "https://github.com/nihui/waifu2x-ncnn-vulkan/releases/download/20210210/waifu2x-ncnn-vulkan-20210210-ubuntu.zip"])
+            except Exception as e:
+                self.create_simple_message_dialog("Failed to download from GitHub!\n" + str(e), "bulk2x - Error")
+                sys.exit()
                 
-                try:
-                    subprocess.run(["unzip", "waifu2x-ncnn-vulkan-20210210-ubuntu.zip"])
-                except Exception as e:
-                    self.create_simple_message_dialog("Failed to unzip archive from GitHub!\n" + str(e), "bulk2x - Error")
-                    return
+            try:
+                subprocess.run(["unzip", "waifu2x-ncnn-vulkan-20210210-ubuntu.zip"])
+            except Exception as e:
+                self.create_simple_message_dialog("Failed to unzip archive from GitHub!\n" + str(e), "bulk2x - Error")
+                sys.exit()
 
-                try:
-                    os.remove("waifu2x-ncnn-vulkan-20210210-ubuntu.zip")
-                except Exception as e:
-                    self.create_simple_message_dialog("Failed to remove unzipped archive!\n" + str(e), "bulk2x - Error")
-                    return
+            try:
+                os.remove("waifu2x-ncnn-vulkan-20210210-ubuntu.zip")
+            except Exception as e:
+                self.create_simple_message_dialog("Failed to remove unzipped archive!\n" + str(e), "bulk2x - Error")
+                sys.exit()
 
-                self.base_command = self.LOCAL_BASE_COMMAND
+            return self.LOCAL_BASE_COMMAND + " " + self.BASE_COMMAND_OPTIONS
 
-        self.builder.get_object("command_textbox").set_text(self.base_command)
+        sys.exit()
 
     # quit with cancel
     def on_window0_destroy(self, object, data=None):
@@ -232,13 +233,17 @@ class Main:
 
         self.check_input_output()   
 
-    # contatenate the command using the command_textbox, input, and output
-    def get_command(self, _input: str, _output: str) -> str:
+    # returns the base command with input/output paths as a list
+    def get_command(self, _input: str, _output: str) -> []:
         # get widget
         command_textbox = self.builder.get_object("command_textbox")
 
-        # concatenate and return
-        return command_textbox.get_text().format(input = _input, output = _output) # TODO return as list; refactor references to this function
+        # split command by spaces
+        split_command = command_textbox.get_text().split()
+
+        # replace {input} and {output} and return
+        input_output_dic = {"{input}": _input, "{output}": _output}
+        return [input_output_dic.get(i, i) for i in split_command]
 
     # return a list of files within a directory recursively
     def get_files_in_dir(self, dir: str) -> []:
@@ -254,16 +259,25 @@ class Main:
                     temp0.append(g)
         return temp0
 
+    # join the command for cosmetic purposes
+    def join_command(self, command: []) -> str:
+        command_string = ""
+        for i in range(0, len(command)):
+            if (i == 2 or i == 4):
+                command_string += "\"" + command[i] + ("\" " if i == 2 else "\"")
+                continue
+            command_string += command[i] + " "
+        return command_string
+
     # upscale image using the parameters set in the command var
-    def upscale_image(self, command: str):
+    def upscale_image(self, command: []):
         # log command and execute it
-        self.add_to_details_log("> " + command)
-        print("Split: " + str(command.split()))
-        output = subprocess.run(command.split(), capture_output=True)
+        self.add_to_details_log("> " + self.join_command(command) + "\n")
+        output = subprocess.run(command, capture_output=True)
         self.add_to_details_log(output.stderr.decode('utf-8'))
         
         # log when finished
-        self.add_to_details_log("Finished processing file!")
+        self.add_to_details_log("Finished processing file!\n")
 
     # called when the file button in the header bar is clicked
     def file_button_clicked(self, popover, data=None):
