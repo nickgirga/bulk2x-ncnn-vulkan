@@ -76,7 +76,7 @@ class Main:
         except Exception as e:
             print("Local command failed!\n" + str(e))
 
-        response = self.create_simple_message_dialog("Failed to run waifu2x-ncnn-vulkan! Do you want to download the latest binaries from GitHub?", "bulk2x - Error", True)
+        response = self.create_simple_message_dialog("Failed to run waifu2x-ncnn-vulkan! Do you want to download the binaries from GitHub (Release 20210210)?", "bulk2x - Error", True)
         if (response == Gtk.ResponseType.YES):
             try:
                 subprocess.run(["wget", "https://github.com/nihui/waifu2x-ncnn-vulkan/releases/download/20210210/waifu2x-ncnn-vulkan-20210210-ubuntu.zip"])
