@@ -245,6 +245,21 @@ class Main:
         input_output_dic = {"{input}": _input, "{output}": _output}
         return [input_output_dic.get(i, i) for i in split_command]
 
+    # replicates the folder structure of root_dir into destination_root_dir
+    def create_dir_structure(self, root_dir: str, destination_root_dir: str):
+        temp0 = []
+        d = os.listdir(root_dir)
+        for f in d:
+            source_dir = root_dir + "/" + f
+            destination_dir = destination_root_dir + "/" + f
+            if (os.path.isdir(source_dir)):
+                try:
+                    os.makedirs(destination_dir)
+                except Exception as e:
+                    self.create_simple_message_dialog("Failed to create directory!\n" + str(e), "bulk2x - Error")
+                
+                self.create_dir_structure(source_dir, destination_dir)
+
     # return a list of files within a directory recursively
     def get_files_in_dir(self, dir: str) -> []:
         temp0 = []
@@ -364,6 +379,13 @@ class Main:
                 # check if output_path is a directory
                 if (not os.path.isdir(self.output_path)):
                     self.create_simple_message_dialog("Output path must be set to a directory when \"Use directories\" is enabled", "bulk2x - Error")
+                    return
+
+                # create the folder structure within the destination directory
+                try:
+                    self.create_dir_structure(self.input_path, self.output_path)
+                except Exception as e:
+                    self.add_to_details_log("Failed to create folder structure!\n" + str(e))
                     return
 
                 # get files in directory at input_path

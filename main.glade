@@ -33,10 +33,29 @@ Author: Nicholas Girga
     <property name="icon-name">help-about</property>
   </object>
   <object class="GtkTextBuffer" id="details_text"/>
-  <object class="GtkImage" id="file_icon">
-    <property name="visible">True</property>
+  <object class="GtkPopover" id="file_popover">
     <property name="can-focus">False</property>
-    <property name="icon-name">preferences-other</property>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkModelButton" id="quit_button">
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+            <property name="text" translatable="yes">Quit</property>
+            <signal name="clicked" handler="on_window0_destroy" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+      </object>
+    </child>
   </object>
   <object class="GtkImage" id="open_icon">
     <property name="visible">True</property>
@@ -50,6 +69,7 @@ Author: Nicholas Girga
   </object>
   <object class="GtkWindow" id="window0">
     <property name="can-focus">False</property>
+    <property name="window-position">center</property>
     <property name="default-width">360</property>
     <property name="default-height">-1</property>
     <signal name="hide" handler="on_window0_destroy" swapped="no"/>
@@ -449,15 +469,6 @@ Author: Nicholas Girga
         <property name="title" translatable="yes">bulk2x</property>
         <property name="show-close-button">True</property>
         <child>
-          <object class="GtkButton" id="file_button">
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="receives-default">True</property>
-            <property name="image">file_icon</property>
-            <signal name="clicked" handler="file_button_clicked" object="file_popover" swapped="no"/>
-          </object>
-        </child>
-        <child>
           <object class="GtkButton" id="about_button">
             <property name="visible">True</property>
             <property name="can-focus">True</property>
@@ -468,31 +479,6 @@ Author: Nicholas Girga
           <packing>
             <property name="pack-type">end</property>
             <property name="position">1</property>
-          </packing>
-        </child>
-      </object>
-    </child>
-  </object>
-  <object class="GtkPopover" id="file_popover">
-    <property name="can-focus">False</property>
-    <property name="relative-to">file_button</property>
-    <child>
-      <object class="GtkBox">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
-        <property name="orientation">vertical</property>
-        <child>
-          <object class="GtkModelButton" id="quit_button">
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="receives-default">True</property>
-            <property name="text" translatable="yes">Quit</property>
-            <signal name="clicked" handler="on_window0_destroy" swapped="no"/>
-          </object>
-          <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-            <property name="position">2</property>
           </packing>
         </child>
       </object>
