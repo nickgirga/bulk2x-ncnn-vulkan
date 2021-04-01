@@ -5,6 +5,12 @@ Simple GUI to make it easy to use [waifu2x-ncnn-vulkan](https://github.com/nihui
 
 ![screenshot_0.png](.screenshots/screenshot_0.png)
 
+# Dependencies
+ - [Python 3](https://www.python.org/downloads/)
+ - [PyGObject](https://pypi.org/project/PyGObject/)
+ - [GTK 3](https://www.gtk.org/)
+ - [waifu2x-ncnn-vulkan](https://github.com/nihui/waifu2x-ncnn-vulkan) (or [wget](https://www.gnu.org/software/wget/wget.html) and [unzip](http://infozip.sourceforge.net/UnZip.html))
+
 # Obtaining
 You can download a compressed archive ([zip](https://gitlab.com/nickgirga/bulk2x-ncnn-vulkan/-/archive/master/bulk2x-ncnn-vulkan-master.zip), [tar.gz](https://gitlab.com/nickgirga/bulk2x-ncnn-vulkan/-/archive/master/bulk2x-ncnn-vulkan-master.tar.gz), [tar.bz2](https://gitlab.com/nickgirga/bulk2x-ncnn-vulkan/-/archive/master/bulk2x-ncnn-vulkan-master.tar.bz2), [tar](https://gitlab.com/nickgirga/bulk2x-ncnn-vulkan/-/archive/master/bulk2x-ncnn-vulkan-master.tar)) of the repository from the [project overview](https://gitlab.com/nickgirga/bulk2x-ncnn-vulkan) or you can clone the repository using git by running `git clone https://gitlab.com/nickgirga/bulk2x-ncnn-vulkan.git`. If you downloaded a compressed archive, decompress it using the appropriate tool (unzip, tar). Then head to the [running](#running) section.
 
