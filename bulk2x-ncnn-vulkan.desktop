@@ -1,0 +1,10 @@
+#!/usr/bin/env xdg-open
+
+[Desktop Entry]
+Version=1.0
+Type=Application
+Terminal=false
+Exec=bulk2x-ncnn-vulkan
+Name=bulk2x
+Comment=Simple GUI to make it easy to use waifu2x-ncnn-vulkan
+Icon=/usr/share/bulk2x-ncnn-vulkan/res/icon.svg
