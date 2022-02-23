@@ -35,6 +35,7 @@ class Main:
     use_directories = False
     input_path = ""
     output_path = ""
+    args = sys.argv[1:]
 
     # initialize glade file
     def __init__(self, **kwargs):
@@ -61,6 +62,40 @@ class Main:
 
         # set the default command
         self.builder.get_object("command_textbox").set_text(self.get_base_command())
+
+        # set the input file to the first argument the program launched with
+        if (len(self.args) > 0):
+            if (self.args[0] != ""):
+
+                # get the use_directories_switch widget
+                use_directories_switch = self.builder.get_object("use_directories_switch")
+
+                if (os.path.isfile(self.args[0])):
+                    # log open file on launch event
+                    self.add_to_details_log("Opened with file: \"" + self.args[0] + "\"\n")
+
+                    # ensure the use_directories_switch switch is off
+                    self.set_use_directories(False)
+                    use_directories_switch.set_active(False)
+
+                    # update input_path var and dipslay
+                    self.set_input_path(self.args[0])
+
+                elif (os.path.isdir(self.args[0])):
+                    # log open directory on launch event
+                    self.add_to_details_log("Opened with directory: \"" + self.args[0] + "\"\n")
+
+                    # ensure the use_directories_switch switch is on
+                    self.set_use_directories(True)
+                    use_directories_switch.set_active(True)
+
+                    # update input_path var and dipslay
+                    self.set_input_path(self.args[0])
+
+                else:
+                    # log failure to open file/directory on launch
+                    self.add_to_details_log("Attempted to open with invalid argument: \"" + self.args[0] + "\"");
+                    self.add_to_details_log("This must be a valid file or directory. Verify the path is correct and that the file or directory exists.\n")
 
     # returns the base command without input/output paths
     def get_base_command(self) -> str:
